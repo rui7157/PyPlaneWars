@@ -2,7 +2,7 @@ import pyxel as px
 import glfw
 
 __doc__="""
-火炬动画练习
+飞机大战游戏
 
 """
 
@@ -10,6 +10,9 @@ class App:
     def __init__(self):
         px.init(123, 200,scale=0)
         px.load("AircraftWars.pyxel")
+        #调试信息
+        self.dprint = "" 
+
         self.playerX = px.width/2-8
         self.playerY = px.height-16
         self.playerAnim = 16
@@ -19,24 +22,12 @@ class App:
         self.bx = self.playerX+8
         self.by = self.playerY-8
         self.initBG()
-
-
         px.mouse=True
-
-
         px.run_with_profiler(self.update, self.draw)
 
 
-    
 
-    def update(self):
 
-        self.playerInput()
-
-        self.updateBullet()
-        #动画区域firstGrid-endGrid
-        self.updateAirAnimate(self.lrKey)
-        self.updateBG()
 
     def playerInput(self):
         if px.btnp(px.KEY_Q):
@@ -58,14 +49,15 @@ class App:
             self.lrKey = "left"
             self.playerAnim = 64
             self.playerLeftToRight = 16
-            print("press LEFT")
+            # print("press LEFT")
+            self.dprint="press LEFT"
+
         if px.btnp(px.KEY_RIGHT):
             self.lrKey = "right"
             self.playerLeftToRight = -16
-            
             self.playerAnim = 64
-            
-            print("press RIGHT")
+            # print("press RIGHT")
+            self.dprint="press RIGHT"
             
         if px.btnr(px.KEY_LEFT) or px.btnr(px.KEY_RIGHT):
             self.lrKey=""
@@ -97,7 +89,6 @@ class App:
                 setattr(self,objName,firstGrid+width*(anmCount-1))
 
 
-
     def updateAirAnimate(self,dire=""):
         #飞机动画
         
@@ -107,7 +98,6 @@ class App:
             self.disposableAnim("playerAnim",64,16,2,10)
         else:
             self._updateAnimate("playerAnim",0,16,4)
-
 
 
     def updateBullet(self):
@@ -121,6 +111,9 @@ class App:
         #     if y%5==0:
         #         px.rect(self.playerX+8, self.playerY-y, self.playerX+8, self.playerY-y, 7)
 
+
+
+
     def initBG(self):
         #初始化背景
         self.bgx = 0
@@ -129,16 +122,29 @@ class App:
     def displayBG(self):
         bgWidth = 1
         bgHeight = 8
-        # self.bg = [ bgLeft,bgRight for px.rect(self.bgx,self.bgy,self.bgx+bgWidth,self.bgy+bgHeight,6),px.rect(self.bgx,self.bgy,self.bgx+bgWidth,self.bgy+bgHeight,6) in zip()]
-        #左边背景
+        #背景左边
         px.rect(self.bgx,self.bgy,self.bgx+bgWidth-1,self.bgy+bgHeight,6)
-        #右边背景
+        #背景右边
         px.rect(self.bgx+px.width-1,self.bgy,self.bgx+px.width+bgWidth-1,self.bgy+bgHeight,6)
+
 
     def updateBG(self):
         self.bgy+=16
         if self.bgy>=px.height:
             self.bgy = 0
+
+
+
+    def update(self):
+        #每帧更新
+        self.playerInput()
+
+        self.updateBullet()
+        #动画区域firstGrid-endGrid
+        self.updateAirAnimate(self.lrKey)
+        self.updateBG()
+        self.dprint="->{}".format(px.frame_count)
+
 
     def draw(self):
         #绘图
@@ -159,6 +165,8 @@ class App:
         self.displayBG()
         self.updateBullet()
         
-        px.text(5,4,"this a game deme ",1)
+        # px.text(5,4,"this a game deme ",7)
+        px.text(5,4,"Debug:{}".format(self.dprint),7)
+
 
 App()
