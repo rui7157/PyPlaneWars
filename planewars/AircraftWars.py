@@ -13,6 +13,7 @@ __doc__ = """
 """
 
 
+
 class App:
     def __init__(self):
         px.init(123, 200, scale=0)
