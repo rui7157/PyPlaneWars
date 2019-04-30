@@ -10,7 +10,7 @@ class Player():
     def __init__(self):
         self.x = px.width/2-8
         self.y = px.height-16
-        self.playerAnim = 16
+        self.playerAnim = 0
         self.playerLeftToRight = 16
         self.playerUpToDown = 16
 
@@ -30,5 +30,5 @@ class Player():
             0,
             self.playerLeftToRight,
             self.playerUpToDown,
-            12
+            0
         )

@@ -1,5 +1,5 @@
 import pyxel as px
-from math import cos,sin
+# from math import cos,sin
 import random
 __doc__ = """
 敌人(第二张图)
@@ -100,8 +100,8 @@ class Enemy():
                     self.x+=1
             if self.x <= 16:
                 self.x = 16
-            # if self.x >= px.width-16:
-            #     self.x = px.width-32
+            if self.x >= px.width-32:
+                self.x = px.width-32
         elif self.moveMode == 4:
             #加速度直线飞行
             if abs(self.x-self.player.x)<24:
