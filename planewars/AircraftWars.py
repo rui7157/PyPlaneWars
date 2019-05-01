@@ -22,7 +22,7 @@ class App:
         px.load("AircraftWars.pyxel")
         #调试信息
         self.dprint = ""
-
+        self.gameover = False
         self.score=0
         self.player = Player()
         self.playerAnimateStatus = "run"
@@ -54,27 +54,11 @@ class App:
             self.player.y = min(self.player.y + 2, px.height - 16)
 
 
-
-        # if px.btnp(px.KEY_LEFT):
-        #     # self.player.playerAnim = 64
-        #     # self.player.playerLeftToRight = 16
-        #     print("press LEFT")
-        #     self.turnPosAnimate("left")
-        #     return 
-        # if px.btnp(px.KEY_RIGHT):
-        #     # self.player.playerLeftToRight = -16
-        #     # self.player.playerAnim = 64
-        #     print("press RIGHT")
-        #     self.turnPosAnimate("right")
-        #     return 
         if px.btnr(px.KEY_LEFT) or px.btnr(px.KEY_RIGHT):
             self.playerAnimateStatus= "run"
 
         self.updatePlayerAnimate()
 
-
-        # self.updatePlayerAnimate()
-        # self._updateAnimate("playerAnim", 0, 16, 4)
 
     def updatePlayerAnimate(self):
         """循环播放"""
@@ -99,7 +83,6 @@ class App:
             self.player.playerAnim = 16*4
 
         if px.frame_count % 8 == 0:
-            print("转向",self.player.playerAnim)
             if self.player.playerAnim >= 16*3+16*3:
                 self.player.playerAnim = 16*3+16*3
             else:
@@ -156,7 +139,7 @@ class App:
     def bulletHitEnemy(self):
         #子弹命中敌人
         if hasattr(self,"enemy"):
-            if self.checkHit(self.bX, self.bY, self.bR+1, self.enemy.x, self.enemy.y, 8):
+            if self.checkHit(self.bX, self.bY, self.bR+1, self.enemy.x+8, self.enemy.y+8, 8):
                 #已经命中
                 self.initBullet()
                 self.bomb = Bomb(self.enemy.x,self.enemy.y)
@@ -164,6 +147,10 @@ class App:
                 self.initNewEnemy()
                 # self.initEnemy()
                 self.score+=1
+            if self.checkHit(self.player.x+8, self.player.y+8, 4, self.enemy.x+8, self.enemy.y+8, 8):
+                self.bomb = Bomb(self.player.x,self.player.y)
+                self.gameover=True
+            
 
     def initNewEnemy(self):
         self.enemy = Enemy(self.player,moveMode=random.randint(1,6))
@@ -171,6 +158,16 @@ class App:
     def update(self):
         #每帧更新
         self.playerInput()
+        
+        if hasattr(self,"bomb"):
+            if self.bomb.isdel:
+                del self.bomb
+            else:
+                self.bomb.updateBomb()
+        if self.gameover:
+            return 
+
+
         self.updateBullet()
         if hasattr(self,"enemy"):
             self.enemy.updateEnemy()
@@ -180,17 +177,18 @@ class App:
                 del self.enemy
                 self.initNewEnemy()
 
-        if hasattr(self,"bomb"):
-            if self.bomb.isdel:
-                del self.bomb
-            else:
-                self.bomb.updateBomb()
+
         self.updateBG()
         self.dprint = "->{}".format(px.frame_count)
 
     def draw(self):
-
-        
+        if hasattr(self,"bomb"):
+            self.bomb.drawBomb()
+        if self.gameover:
+            px.text(40, px.height/2-32, "Game Over!", px.frame_count % 16)
+            px.text(30, px.height/2+8, "Your score is {}.".format(self.score), 7)
+            px.text(20, px.height/2+16, "Press Q to exit the Game.".format(self.score), 7)
+            return 
         #绘图
         px.cls(0)
         self.player.drawPlayer()
@@ -201,12 +199,14 @@ class App:
         
         if hasattr(self,"enemy") and self.enemy != None:
             self.enemy.drawEnemy()
-            px.text(0, 4, "Debug:{}".format(str(int(self.enemy.y))+":"+str(self.enemy.x)),7)
+            # px.text(0, 4, "Debug:{}".format(str(int(self.player.y))+":"+str(self.player.x)),7)
 
-        if hasattr(self,"bomb"):
-            self.bomb.drawBomb()
 
-        px.text(0, 10, "Score:{}".format(self.score), 7)
+
+        px.text(0, 4, "Score:{}".format(self.score), 7)
+
+
+
 
 if __name__ == "__main__":
     App()
