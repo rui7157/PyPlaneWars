@@ -1,9 +1,10 @@
 import pyxel as px
 
-__doc__ ="""
+__doc__ = """
 玩家
 
 """
+
 
 class Player():
 
@@ -14,12 +15,8 @@ class Player():
         self.playerLeftToRight = 16
         self.playerUpToDown = 16
 
-
-
     def updatePlayer(self):
         pass
-
-    
 
     def drawPlayer(self):
         px.blt(

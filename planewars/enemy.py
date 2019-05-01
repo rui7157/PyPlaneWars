@@ -19,13 +19,13 @@ __doc__ = """
 
 class Enemy():
 
-    def __init__(self,player:px, moveMode: int, hp: int=1, fireMode: int=0):
+    def __init__(self, player: px, moveMode: int, hp: int = 1, fireMode: int = 0):
         """按照飞行模式和射击模式，血量生成一个敌人"""
         self.player = player
         self.moveMode = moveMode
         self.hp = hp
         self.fireMode = fireMode
-        if self.moveMode in [1,2,3,4]:
+        if self.moveMode in [1, 2, 3, 4]:
             self.x = random.randint(8, px.width-8)
         elif self.moveMode in []:
             self.x = self.player.x+8
@@ -36,27 +36,23 @@ class Enemy():
 
         self.LeftToRight = 16
         #负数上下颠倒
-        self.UpToDown = 16 * -1 
-        print("已经创建对象:",id(self))
-        # self.lv = random.randint(2, 8)
-        # self.clr = random.randint(1, 16)
+        self.UpToDown = 16 * -1
         #标记删除
         self.isdel = False
-
 
     def drawEnemy(self):
         #构建敌人
         #飞行模式对应敌机外形图()
-        m2p={
-            1:0,
-            2:2,
-            3:1,
-            4:3
+        m2p = {
+            1: 0,
+            2: 2,
+            3: 1,
+            4: 3
         }
 
         picX = 0
         #如没有则使用5号图
-        picY = m2p.get(self.moveMode,4) * 16
+        picY = m2p.get(self.moveMode, 4) * 16
         #绘图
         px.blt(
             self.x,
@@ -69,9 +65,6 @@ class Enemy():
             0
         )
 
-    def __del__(self):
-        print("已经销毁:id>{}".format(id(self)))
-
     def updateEnemy(self):
         #敌人移动轨迹
         if self.moveMode == 1:
@@ -80,49 +73,45 @@ class Enemy():
         elif self.moveMode == 2:
             #向玩家X轴飞行
             self.y += 1
-            if self.x< self.player.x:
-                self.x+=1
-            elif self.x>self.player.x:
-                self.x-=1
+            if self.x < self.player.x:
+                self.x += 1
+            elif self.x > self.player.x:
+                self.x -= 1
 
         elif self.moveMode == 3:
            # 躲避玩家
             self.y += 1
-            if self.x< self.player.x:
-                if abs(self.x-self.player.x)<6:
+            if self.x < self.player.x:
+                if abs(self.x-self.player.x) < 6:
                     self.x = self.x-(6-abs(self.x-self.player.x))
                 else:
-                    self.x-=1
-            elif self.x>self.player.x:
-                if abs(self.x-self.player.x)<6:
+                    self.x -= 1
+            elif self.x > self.player.x:
+                if abs(self.x-self.player.x) < 6:
                     self.x = self.x+(6-(abs(self.x-self.player.x)))
                 else:
-                    self.x+=1
+                    self.x += 1
             if self.x <= 16:
                 self.x = 16
             if self.x >= px.width-32:
                 self.x = px.width-32
         elif self.moveMode == 4:
             #加速度直线飞行
-            if abs(self.x-self.player.x)<24:
-                print(abs(self.x-self.player.x))
-                if 24-abs(self.x-self.player.x) >8:
+            if abs(self.x-self.player.x) < 24:
+                if 24-abs(self.x-self.player.x) > 8:
                     self.y = self.y+8
                 else:
                     self.y = self.y+(24-abs(self.x-self.player.x))
             else:
-                self.y =self.y+2
+                self.y = self.y+2
         else:
             #默认模式1
             self.y += 2
 
         #飞出到底
         if self.y > px.height:
-            # self.initEnemy()
             self.y = 0
-            # Enemy.delself(self)
-            # print(id(self))
             self.isdel = True
 
         #控制左右飞行
-        self.x =max(min(px.width-16,self.x),0)
+        self.x = max(min(px.width-16, self.x), 0)
