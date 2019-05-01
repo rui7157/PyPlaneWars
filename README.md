@@ -19,7 +19,7 @@ pyxeleditor ircraftWars.pyxel
 
 ### 演示
 
-![演示](https://github.com/rui7157/PyPlaneWars/blob/master/demo190429.gif)
+![演示](https://github.com/rui7157/PyPlaneWars/blob/master/screenshots/7.gif)
 
 
 
