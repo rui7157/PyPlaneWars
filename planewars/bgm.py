@@ -51,10 +51,10 @@ class BGM():
         px.stop()
 
     def bombSound(self):
-        px.play(0, 0, loop=False)
+        px.play(2, 0, loop=False)
 
     def bulletSound(self):
-        px.play(0, 6, loop=False)
+        px.play(2, 6, loop=False)
 
     def gameoverSound(self):
-        px.play(0, 7, loop=False)
+        px.play(2, 7, loop=False)
